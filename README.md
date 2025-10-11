@@ -1,4 +1,4 @@
-# VatFS - VATSIM Flight Strip Printer
+# VatFSP - VATSIM Flight Strip Printer
 
 A web-based flight strip printing system that uses the VATSIM data feed to display and print flight strips on a POS-5890K 58mm thermal printer.
 
