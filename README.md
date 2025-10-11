@@ -1,4 +1,4 @@
-# VATSIM Flight Strip Printer
+# VatFS - VATSIM Flight Strip Printer
 
 A web-based flight strip printing system that uses the VATSIM data feed to display and print flight strips on a POS-5890K 58mm thermal printer.
 
@@ -11,6 +11,10 @@ A web-based flight strip printing system that uses the VATSIM data feed to displ
 - Filter by airport ICAO code (default: ESGG)
 - SVG-based flight strip template
 - Modern UI with Vue 3 and Vuetify
+
+## Measurements
+
+This creates strips that fold along the middle, resulting in 29 x 167 mm strips (on my model)
 
 ## Prerequisites
 
