@@ -11,10 +11,13 @@
       <v-chip
         :color="printerConnected ? 'success' : 'error'"
         variant="flat"
-        class="mr-4"
+        class="mr-4 printer-status-chip"
       >
         <v-icon :icon="printerConnected ? 'mdi-printer' : 'mdi-printer-off'" start></v-icon>
         {{ printerConnected ? 'Connected' : 'Disconnected' }}
+        <v-tooltip activator="parent" location="bottom">
+          Auto-checking every 5 seconds
+        </v-tooltip>
       </v-chip>
       
       <v-btn icon @click="testPrinter" :disabled="!printerConnected">
@@ -30,8 +33,8 @@
           @update:modelValue="onAirportChange"
         />
         
-        <!-- Runway Selection -->
-        <v-card class="mb-4" v-if="runways.length > 0">
+        <!-- Runway Selection and Blank Strip -->
+        <v-card class="mb-4">
           <v-card-text>
             <v-row align="center">
               <v-col cols="12" md="4">
@@ -42,6 +45,9 @@
                   density="comfortable"
                   @update:modelValue="onRunwayChange"
                   clearable
+                  :disabled="runways.length === 0"
+                  :hint="runways.length === 0 ? 'No runways available for selected airport' : ''"
+                  persistent-hint
                 ></v-select>
               </v-col>
               <v-col cols="12" md="8" class="text-right">
@@ -64,6 +70,7 @@
           :departures="departures"
           :loading="loading"
           :last-update="lastUpdate"
+          :printed-strips="printedStrips"
           @print="handlePrint"
         />
       </v-container>
@@ -104,6 +111,8 @@ export default {
     const lastUpdate = ref(null);
     const printerConnected = ref(false);
     const refreshInterval = ref(null);
+    const printerCheckInterval = ref(null);
+    const printedStrips = ref(new Set()); // Track printed strips by callsign
     
     const snackbar = ref({
       show: false,
@@ -164,6 +173,8 @@ export default {
     const handlePrint = async (flight) => {
       try {
         const result = await api.printStrip(flight);
+        // Mark this strip as printed
+        printedStrips.value.add(flight.callsign);
         showSnackbar(result.message || 'Flight strip printed successfully', 'success');
         if (result.warning) {
           setTimeout(() => showSnackbar(result.warning, 'warning'), 3500);
@@ -192,16 +203,23 @@ export default {
     };
 
     const startAutoRefresh = () => {
-      // Refresh every 15 seconds
+      // Refresh flights every 15 seconds
       refreshInterval.value = setInterval(() => {
         fetchFlights();
-        checkPrinterStatus();
       }, 15000);
+      
+      // Check printer status more frequently (every 5 seconds)
+      printerCheckInterval.value = setInterval(() => {
+        checkPrinterStatus();
+      }, 5000);
     };
 
     const stopAutoRefresh = () => {
       if (refreshInterval.value) {
         clearInterval(refreshInterval.value);
+      }
+      if (printerCheckInterval.value) {
+        clearInterval(printerCheckInterval.value);
       }
     };
 
@@ -225,6 +243,7 @@ export default {
       loading,
       lastUpdate,
       printerConnected,
+      printedStrips,
       snackbar,
       onAirportChange,
       onRunwayChange,
@@ -241,6 +260,19 @@ html, body {
   margin: 0;
   padding: 0;
   overflow-x: hidden;
+}
+
+.printer-status-chip {
+  animation: pulse-glow 5s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.85;
+  }
 }
 </style>
 

@@ -52,16 +52,28 @@
               </v-list-item-subtitle>
               
               <template v-slot:append>
-                <v-btn
-                  icon="mdi-printer"
-                  color="primary"
-                  variant="tonal"
-                  size="small"
-                  @click="$emit('print', flight)"
-                >
-                  <v-icon>mdi-printer</v-icon>
-                  <v-tooltip activator="parent" location="top">Print Strip</v-tooltip>
-                </v-btn>
+                <div class="d-flex align-center">
+                  <v-icon
+                    v-if="isPrinted(flight.callsign)"
+                    color="success"
+                    size="small"
+                    class="mr-2"
+                  >
+                    mdi-check-circle
+                  </v-icon>
+                  <v-btn
+                    icon="mdi-printer"
+                    color="primary"
+                    variant="tonal"
+                    size="small"
+                    @click="$emit('print', flight)"
+                  >
+                    <v-icon>mdi-printer</v-icon>
+                    <v-tooltip activator="parent" location="top">
+                      {{ isPrinted(flight.callsign) ? 'Print Again' : 'Print Strip' }}
+                    </v-tooltip>
+                  </v-btn>
+                </div>
               </template>
             </v-list-item>
           </v-list>
@@ -121,16 +133,28 @@
               </v-list-item-subtitle>
               
               <template v-slot:append>
-                <v-btn
-                  icon="mdi-printer"
-                  color="success"
-                  variant="tonal"
-                  size="small"
-                  @click="$emit('print', flight)"
-                >
-                  <v-icon>mdi-printer</v-icon>
-                  <v-tooltip activator="parent" location="top">Print Strip</v-tooltip>
-                </v-btn>
+                <div class="d-flex align-center">
+                  <v-icon
+                    v-if="isPrinted(flight.callsign)"
+                    color="success"
+                    size="small"
+                    class="mr-2"
+                  >
+                    mdi-check-circle
+                  </v-icon>
+                  <v-btn
+                    icon="mdi-printer"
+                    color="success"
+                    variant="tonal"
+                    size="small"
+                    @click="$emit('print', flight)"
+                  >
+                    <v-icon>mdi-printer</v-icon>
+                    <v-tooltip activator="parent" location="top">
+                      {{ isPrinted(flight.callsign) ? 'Print Again' : 'Print Strip' }}
+                    </v-tooltip>
+                  </v-btn>
+                </div>
               </template>
             </v-list-item>
           </v-list>
@@ -171,6 +195,10 @@ export default {
     lastUpdate: {
       type: Date,
       default: null
+    },
+    printedStrips: {
+      type: Set,
+      default: () => new Set()
     }
   },
   emits: ['print', 'refresh'],
@@ -178,6 +206,9 @@ export default {
     formatTime(date) {
       if (!date) return 'Never';
       return date.toLocaleTimeString();
+    },
+    isPrinted(callsign) {
+      return this.printedStrips.has(callsign);
     }
   }
 };
