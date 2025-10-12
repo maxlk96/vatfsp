@@ -1,29 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Generator: Adobe Illustrator 28.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
 <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-	 viewBox="0 0 2362 372" style="enable-background:new 0 0 2362 372;" xml:space="preserve">
+	 viewBox="0 0 2686 372" style="enable-background:new 0 0 2686 372;" xml:space="preserve">
 <style type="text/css">
 	.st0{font-family:'MicrosoftSansSerif';}
-	.st1{font-size:100px;}
+	.st1{font-size:110px;}
 	.st2{font-size:65px;}
 	.st3{font-size:55.8563px;}
 	.st4{font-family:'TimesNewRomanPS-BoldMT';}
 </style>
-<path d="M1934.9,1h6.9v169h-6.9V1z"/>
-<path d="M1440.4,1h6.9v169h-6.9V1z"/>
-<path d="M1688.4,1h6.9v343h-6.9V1z"/>
-<path d="M1193.5,1h6.9v343h-6.9V1z"/>
-<path d="M430.1,0h7.1v342h-7.1V0z"/>
-<path d="M686.3,0h6.9v342h-6.9V0z"/>
-<path d="M688.8,166.2v7l-255,0.2v-7L688.8,166.2z"/>
-<path d="M1948.6,167.8v7l-754.8,0.5v-7L1948.6,167.8z"/>
-<text transform="matrix(0.7 0 0 1 37.4517 95.1284)" class="st0 st1">CALLSIGN</text>
-<text transform="matrix(1 0 0 1 473.2155 150.3378)" class="st0 st2">ETA</text>
-<text transform="matrix(1 0 0 1 1222.3774 319.8383)" class="st0 st2">ADEP</text>
-<text transform="matrix(1 0 0 1 1223.4133 70.1692)" class="st0 st2">ZZGG</text>
-<text transform="matrix(1 0 0 1 1493.0977 319.8378)" class="st0 st2">ADES</text>
-<text transform="matrix(1 0 0 1 1954.6467 319.8378)" class="st0 st3">EOBT</text>
-<text transform="matrix(1 0 0 1 193.0201 242.4556)" class="st0 st2">ATYP</text>
-<text transform="matrix(1 0 0 1 231.8699 319.838)" class="st0 st2">ASSR</text>
-<text transform="matrix(1 0 0 1 73.1394 241.6111)" class="st4 st2">FRUL</text>
+<path d="M2237.1,1h7v169h-7V1z"/>
+<path d="M1686.4,1h7v169h-7V1z"/>
+<path d="M1962.6,1h7v343h-7V1z"/>
+<path d="M1411.4,1h7v343h-7V1z"/>
+<path d="M561.3,0h7v342h-7V0z"/>
+<path d="M846.6,0h7v342h-7V0z"/>
+<path d="M849,166.3v6.8l-284,0.2v-6.8L849,166.3z"/>
+<path d="M2252,168.1v6.5l-840.6,0.5v-6.5L2252,168.1z"/>
+<text transform="matrix(0.7 0 0 1 123.604 95.1284)" class="st0 st1">CALLSIGN</text>
+<text transform="matrix(1 0 0 1 608.9082 150.3379)" class="st0 st2">ETA</text>
+<text transform="matrix(1 0 0 1 1443.2393 319.8379)" class="st0 st2">ADEP</text>
+<text transform="matrix(1 0 0 1 1444.3926 70.1689)" class="st0 st2">ZZGG</text>
+<text transform="matrix(1 0 0 1 1744.7354 319.8379)" class="st0 st2">ADES</text>
+<text transform="matrix(1 0 0 1 2258.7559 319.8379)" class="st0 st3">EOBT</text>
+<text transform="matrix(1 0 0 1 312.8589 242.4551)" class="st0 st2">ATYP</text>
+<text transform="matrix(1 0 0 1 348.1255 319.8379)" class="st0 st2">ASSR</text>
+<text transform="matrix(1 0 0 1 163.3491 241.6113)" class="st4 st2">FRUL</text>
 </svg>
