@@ -14,7 +14,7 @@ A web-based flight strip printing system that uses the VATSIM data feed to displ
 
 ## Measurements
 
-This creates strips that fold along the middle, resulting in 29 x 167 mm strips (on my model)
+This creates strips that fold along the middle, resulting in 29 x 189 mm strips (on my model)
 
 ## Prerequisites
 
