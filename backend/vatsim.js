@@ -68,7 +68,7 @@ class VatsimClient {
 
       // Determine flight rules (FRUL)
       const flightRules = this.determineFlightRules(
-        flightPlan.flight_rules || 'I',
+        flightPlan.flight_rules || '',
         route,
         remarks
       );
@@ -76,6 +76,13 @@ class VatsimClient {
       // Get WTC from aircraft type
       const aircraftType = flightPlan.aircraft_short || flightPlan.aircraft || '';
       const wtc = wtcService.getWTC(aircraftType);
+
+      // Get assigned squawk (prefer assigned_transponder from flight plan)
+      // Fall back to pilot.transponder if assigned is not set or is "0000"
+      const assignedSquawk = flightPlan.assigned_transponder || '';
+      const transponder = (assignedSquawk && assignedSquawk !== '0000') 
+        ? assignedSquawk 
+        : pilot.transponder;
 
       // Create flight strip data object
       const flightData = {
@@ -99,7 +106,7 @@ class VatsimClient {
         heading: pilot.heading,
         latitude: pilot.latitude,
         longitude: pilot.longitude,
-        transponder: pilot.transponder,
+        transponder: transponder, // Use assigned squawk, not set squawk
         flightRules: flightRules,
         server: pilot.server,
         logonTime: pilot.logon_time,
@@ -142,6 +149,8 @@ class VatsimClient {
    * @returns {string} - Flight rule letter (I/V/Y/Z)
    */
   determineFlightRules(rules, route, remarks) {
+    if (!rules) return ''; // If no rules provided, return empty
+    
     const upperRoute = (route + ' ' + remarks).toUpperCase();
     const baseRule = rules.toUpperCase();
 
@@ -155,8 +164,8 @@ class VatsimClient {
       return 'Z';
     }
 
-    // Default to base rule or I
-    return baseRule === 'V' ? 'V' : 'I';
+    // Return base rule (I, V, Y, Z, etc.)
+    return baseRule;
   }
 
   /**

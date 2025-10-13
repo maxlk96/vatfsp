@@ -5,6 +5,7 @@ const config = require('./config');
 const vatsimClient = require('./vatsim');
 const printer = require('./printer');
 const stripRenderer = require('./stripRenderer');
+const wtcService = require('./wtcService');
 
 const app = express();
 
@@ -68,6 +69,128 @@ app.post('/api/print', async (req, res) => {
       res.status(500).json({ 
         error: 'Failed to print flight strip',
         details: error.message 
+      });
+    }
+  }
+});
+
+/**
+ * Print a flight strip from external sources (e.g., VatIRIS)
+ * This endpoint accepts flexible field names and aliases for compatibility
+ * If no callsign is provided, prints a blank strip
+ */
+app.post('/api/print/external', async (req, res) => {
+  try {
+    const requestData = req.body || {};
+    
+    // If no callsign provided, print blank strip
+    const isBlankStrip = !requestData.callsign;
+    
+    // Get aircraft type
+    const aircraftType = requestData.aircraft || requestData.aircraftType || '';
+    
+    // Auto-populate WTC from aircraft type if not provided
+    let wtc = requestData.wtc || requestData.wakeTurbulence || '';
+    if (!wtc && aircraftType) {
+      await wtcService.initialize();
+      wtc = wtcService.getWTC(aircraftType);
+    }
+    
+    // Get transponder/squawk - treat "0000" as no squawk assigned
+    let transponder = requestData.transponder || requestData.squawk || '';
+    if (transponder === '0000') {
+      transponder = ''; // 0000 means no squawk assigned yet
+    }
+    
+    // Map field aliases to standard field names
+    const flightData = {
+      callsign: requestData.callsign || '',
+      type: requestData.type || 'departure',
+      flightRules: requestData.flightRules || requestData.flightType || '',
+      aircraft: aircraftType,
+      wtc: wtc,
+      transponder: transponder,
+      sid: requestData.sid || '',
+      departure: requestData.departure || requestData.origin || '',
+      arrival: requestData.arrival || requestData.destination || '',
+      route: requestData.route || '',
+      rfl: requestData.rfl || requestData.cruiseAltitude || requestData.altitude || '',
+      eobt: requestData.eobt || requestData.departureTime || '',
+      tas: requestData.tas || requestData.speed || '',
+      eta: requestData.eta || requestData.estimatedArrival || ''
+    };
+
+    if (isBlankStrip) {
+      console.log('External blank strip request from VatIRIS/external');
+    } else {
+      console.log('External print request for:', flightData.callsign, 'from VatIRIS/external');
+    }
+
+    // Render flight strip to image
+    const imageBuffer = await stripRenderer.renderStrip(flightData);
+    
+    // Print the image
+    await printer.printImage(imageBuffer);
+    
+    res.json({ 
+      success: true, 
+      message: isBlankStrip 
+        ? 'Blank flight strip printed successfully'
+        : `Flight strip for ${flightData.callsign} printed successfully`,
+      callsign: flightData.callsign || null,
+      type: flightData.type,
+      blank: isBlankStrip
+    });
+  } catch (error) {
+    console.error('Error printing external flight strip:', error);
+    
+    // Try fallback text printing
+    try {
+      // Get aircraft type
+      const fallbackAircraftType = req.body?.aircraft || req.body?.aircraftType || '';
+      
+      // Auto-populate WTC from aircraft type if not provided
+      let fallbackWtc = req.body?.wtc || req.body?.wakeTurbulence || '';
+      if (!fallbackWtc && fallbackAircraftType) {
+        await wtcService.initialize();
+        fallbackWtc = wtcService.getWTC(fallbackAircraftType);
+      }
+      
+      // Get transponder/squawk - treat "0000" as no squawk assigned
+      let fallbackTransponder = req.body?.transponder || req.body?.squawk || '';
+      if (fallbackTransponder === '0000') {
+        fallbackTransponder = ''; // 0000 means no squawk assigned yet
+      }
+      
+      const flightData = {
+        callsign: req.body?.callsign || '',
+        type: req.body?.type || 'departure',
+        flightRules: req.body?.flightRules || req.body?.flightType || '',
+        aircraft: fallbackAircraftType,
+        wtc: fallbackWtc,
+        transponder: fallbackTransponder,
+        sid: req.body?.sid || '',
+        departure: req.body?.departure || req.body?.origin || '',
+        arrival: req.body?.arrival || req.body?.destination || '',
+        route: req.body?.route || '',
+        rfl: req.body?.rfl || req.body?.cruiseAltitude || req.body?.altitude || '',
+        eobt: req.body?.eobt || req.body?.departureTime || '',
+        tas: req.body?.tas || req.body?.speed || '',
+        eta: req.body?.eta || req.body?.estimatedArrival || ''
+      };
+      
+      await printer.printText(flightData);
+      res.json({ 
+        success: true, 
+        message: 'Printed using text fallback',
+        warning: 'Image printing failed, used text mode',
+        callsign: flightData.callsign || null
+      });
+    } catch (fallbackError) {
+      res.status(500).json({ 
+        error: 'Failed to print flight strip',
+        details: error.message,
+        callsign: req.body?.callsign || null
       });
     }
   }

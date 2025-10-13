@@ -27,20 +27,24 @@ class StripRenderer {
         ? `${flightData.aircraft}${flightData.wtc}`
         : (flightData.aircraft || '');
 
+      // Hide squawk 2000 (standard VFR code)
+      const squawk = flightData.transponder === '2000' ? '' : (flightData.transponder || '');
+
       // Replace placeholders with actual data using new field names
       const replacements = {
         'CALLSIGN': flightData.callsign || '',
         'FRUL': flightData.flightRules || '',
         'ATYP': atypWithWtc,
         'WTC': flightData.wtc || '',
-        'ASSR': flightData.transponder || '',
+        'ASSR': squawk,
         'SID': flightData.sid || '',
         'ADEP': flightData.departure || '',
         'ADES': flightData.arrival || '',
         'RTE': this.truncateRoute(flightData.route || ''),
         'RFL': flightData.rfl || '',
         'EOBT': flightData.eobt || '',
-        'TAS': flightData.tas || ''
+        'TAS': flightData.tas || '',
+        'ETA': flightData.eta || ''
       };
 
       // Perform replacements

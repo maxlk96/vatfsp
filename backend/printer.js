@@ -421,6 +421,10 @@ class PrinterController {
           const wtc = flightData.wtc || flightData.WTC || '';
           const aircraftWithWtc = aircraft && wtc ? `${aircraft}${wtc}` : aircraft;
           
+          // Hide squawk 2000 (standard VFR code)
+          const squawk = flightData.transponder || flightData.ASSR || '';
+          const displaySquawk = squawk === '2000' ? '' : (squawk || 'N/A');
+          
           this.printer
             .font('a')
             .align('ct')
@@ -431,9 +435,9 @@ class PrinterController {
             .text('')
             .text('========================')
             .align('lt')
-            .text(`Type: ${stripType}  Rules: ${flightData.flightRules || flightData.FRUL || 'I'}`)
+            .text(`Type: ${stripType}  Rules: ${flightData.flightRules || flightData.FRUL || ''}`)
             .text(`A/C:  ${aircraftWithWtc}`)
-            .text(`Sqwk: ${flightData.transponder || flightData.ASSR || 'N/A'}`)
+            .text(`Sqwk: ${displaySquawk}`)
             .text(`From: ${flightData.departure || flightData.ADEP || ''}`)
             .text(`To:   ${flightData.arrival || flightData.ADES || ''}`)
             .text(`RFL:  ${flightData.rfl || flightData.RFL || flightData.altitude || ''}`)

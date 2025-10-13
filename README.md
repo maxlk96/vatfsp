@@ -48,6 +48,11 @@ Access at http://localhost:3000
 - `frontend/` - Vue 3 + Vuetify application
 - `templates/` - SVG flight strip template
 
+## Documentation
+
+- **[SETUP.md](SETUP.md)** - Complete installation and setup guide
+- **[VATIRIS_INTEGRATION_API.md](VATIRIS_INTEGRATION_API.md)** - API documentation for external integrations (e.g., VatIRIS)
+
 ## License
 
 MIT
