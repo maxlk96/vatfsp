@@ -24,7 +24,7 @@ All fields are optional. If `callsign` is omitted, a blank strip will be printed
 |------------|---------|------|-------------|---------|
 | `callsign` | - | string | Aircraft callsign (omit for blank strip) | `"SAS123"` |
 | `type` | - | string | Strip type: "departure" or "arrival" | `"departure"` |
-| `flightRules` | `flightType` | string | Flight rules: "I" (IFR) or "V" (VFR) | `"I"` |
+| `flightRules` | `flightType` | string | Flight rules: "I" (IFR), "V" (VFR), "Y" (IFR changing to VFR), or "Z" (VFR changing to IFR) | `"I"` |
 | `aircraft` | `aircraftType` | string | Aircraft type ICAO code (auto-fills WTC if omitted) | `"A320"` |
 | `wtc` | `wakeTurbulence` | string | Wake turbulence category: "L", "M", "H", "J" | `"M"` |
 | `transponder` | `squawk` | string | Assigned squawk code ("0000" = no squawk) | `"2301"` |
@@ -219,6 +219,30 @@ printFlightStrip({});
 
 // Usage - blank arrival strip
 printFlightStrip({ type: 'arrival' });
+
+// Usage - with Y flight rules (IFR changing to VFR)
+printFlightStrip({
+  callsign: 'NAX789',
+  type: 'departure',
+  flightRules: 'Y',
+  aircraft: 'C172',
+  departure: 'ESSA',
+  arrival: 'ESSB',
+  route: 'DCT URNIS VFR',
+  rfl: 'FL095'
+});
+
+// Usage - with Z flight rules (VFR changing to IFR)
+printFlightStrip({
+  callsign: 'SE-ABC',
+  type: 'departure',
+  flightRules: 'Z',
+  aircraft: 'PA28',
+  departure: 'ESSB',
+  arrival: 'ESSA',
+  route: 'VFR URNIS IFR',
+  rfl: 'A035'
+});
 ```
 
 ### Python
@@ -364,6 +388,42 @@ curl -X POST http://localhost:3000/api/print/external \
     "rfl": "FL340",
     "eta": "1545",
     "tas": "440"
+  }'
+
+# Test with Y flight rules (IFR changing to VFR)
+curl -X POST http://localhost:3000/api/print/external \
+  -H "Content-Type: application/json" \
+  -d '{
+    "callsign": "NAX789",
+    "type": "departure",
+    "flightRules": "Y",
+    "aircraft": "C172",
+    "wtc": "L",
+    "transponder": "7001",
+    "departure": "ESSA",
+    "arrival": "ESSB",
+    "route": "DCT URNIS VFR",
+    "rfl": "FL095",
+    "eobt": "1615",
+    "tas": "120"
+  }'
+
+# Test with Z flight rules (VFR changing to IFR)
+curl -X POST http://localhost:3000/api/print/external \
+  -H "Content-Type: application/json" \
+  -d '{
+    "callsign": "SE-ABC",
+    "type": "departure",
+    "flightRules": "Z",
+    "aircraft": "PA28",
+    "wtc": "L",
+    "transponder": "7002",
+    "departure": "ESSB",
+    "arrival": "ESSA",
+    "route": "VFR URNIS IFR",
+    "rfl": "A035",
+    "eobt": "1730",
+    "tas": "110"
   }'
 ```
 

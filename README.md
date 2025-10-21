@@ -52,6 +52,7 @@ Access at http://localhost:3000
 
 - **[SETUP.md](SETUP.md)** - Complete installation and setup guide
 - **[VATIRIS_INTEGRATION_API.md](VATIRIS_INTEGRATION_API.md)** - API documentation for external integrations (e.g., VatIRIS)
+- **[Y_Z_FLIGHT_RULES_FIX.md](Y_Z_FLIGHT_RULES_FIX.md)** - Y/Z flight rules support documentation and troubleshooting
 
 ## License
 
